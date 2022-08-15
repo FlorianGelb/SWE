@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>de.dhbwka.swe.utils</groupId>
 			<artifactId>swe-utils</artifactId>
-			<version>4.7.0</version>
+			<version>4.7.2</version>
 		</dependency>
 	</dependencies>
 <!--	<dependencies>

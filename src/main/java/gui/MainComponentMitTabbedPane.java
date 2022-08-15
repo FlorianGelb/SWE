@@ -21,12 +21,7 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.event.IObservable;
 import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.UpdateEvent;
-import de.dhbwka.swe.utils.gui.AttributeComponent;
-import de.dhbwka.swe.utils.gui.AttributeElement;
-import de.dhbwka.swe.utils.gui.ButtonComponent;
-import de.dhbwka.swe.utils.gui.ButtonElement;
-import de.dhbwka.swe.utils.gui.ObservableComponent;
-import de.dhbwka.swe.utils.gui.SimpleListComponent;
+import de.dhbwka.swe.utils.gui.*;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IAttributed;
 import de.dhbwka.swe.utils.model.IDepictable;
@@ -87,23 +82,28 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	
 	private final static String BTN_ADD_LL = "AddElement2LeftList";
 	private final static String BTN_REMOVE_LL = "RemoveElementFromLeftList";
+
+	private final static String BTN_CHANGE_ATR = "ChangeAttrCustomer";
 	
 	public final static String SLC = "SimpleListComponent-1";
 	public final static String ATTC = "AttributeComponent-1";
 	public final static String BTC = "ButtonComponent-1";
-	
+
+	public final static String PRS = "PersoSlideComponent";
 	public final static String LBL_ATTC_KUNDE = "Attribute des Kunden";
 	public final static String LBL_SLC_KUNDE = "Alle Kunden";
 	
 	public final static String TAB_KUNDE = "Kunden";
 	public final static String TAB_BUCHUNG = "Buchungen";
-	
 	private final static Dimension attCompSize =new Dimension(350,500);
 
 	private SimpleListComponent slc = null;
 	private AttributeComponent attComp = null;
 	private ButtonComponent btnComp = null;
+
+	private  ButtonComponent btnChng = null;
 	private JTabbedPane tabbedPane = new JTabbedPane();
+	private SlideshowComponent imgComp = null;
 	
 	public MainComponentMitTabbedPane( IPropertyManager propManager ) {
 //		if( propManager == null ) throw new IllegalArgumentException( "PropManager must not be null!");
@@ -143,7 +143,6 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		slc.setPreferredSize( new Dimension(200, 500) );
 		
 		btnComp = createButtonComponentForLeftList( slc );
-		
 		pnlKunde.add( btnComp, BorderLayout.WEST );
 		slc.addObserver( this );
 		Kunde initKunde = new Kunde();
@@ -152,6 +151,11 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		pnlKunde.add( attComp, BorderLayout.EAST );
 		attComp.setPreferredSize( attCompSize );
 		attComp.addObserver( this );
+		btnChng = createButtonComponentForAttr( attComp );
+		pnlKunde.add( btnChng, BorderLayout.EAST);
+
+		imgComp = createImageComponent(PRS);
+		pnlKunde.add(imgComp, BorderLayout.CENTER);
 		
 		return pnlKunde;
 	}
@@ -163,7 +167,13 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		
 		return pnlBuchung;
 	}
-	
+
+	private SlideshowComponent createImageComponent (String id){
+		return SlideshowComponent.builder( id )
+				.build();
+
+	}
+
 	private AttributeComponent createAttributeComponent( String id, String title, AttributeElement[] attElements) {
 		return AttributeComponent.builder( id )
 				.attributeElements( attElements )
@@ -174,10 +184,10 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	private ButtonComponent createButtonComponentForLeftList( SimpleListComponent slc ) {
 		ButtonElement[] beArr = new ButtonElement[] {
 			ButtonElement.builder( BTN_ADD_LL )
-			.buttonText( "add" )
+			.buttonText( "Anlegen" )
 			.build(),
 			ButtonElement.builder( BTN_REMOVE_LL )
-			.buttonText( "remove" )
+			.buttonText( "Löschen" )
 			.build()
 		};
 		
@@ -187,7 +197,21 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				.componentSize( null )
 				.build();
 	}
-	
+
+	private ButtonComponent createButtonComponentForAttr( AttributeComponent attr ) {
+		ButtonElement[] beArr = new ButtonElement[] {
+				ButtonElement.builder(BTN_CHANGE_ATR)
+						.buttonText( "Ändern" )
+						.build()};
+
+		return ButtonComponent.builder(BTC).buttonElements(beArr)
+				.embeddedComponent( attr )
+				.observer( this )
+				.componentSize( null )
+				.build();
+	}
+
+
 	private AttributeElement[] createAttributeElementsFor( IAttributed attObj ) {
 		AttributeElement[] aeArr = null;
 		if( attObj != null ) {
