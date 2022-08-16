@@ -1,24 +1,31 @@
 package gui;
 
-import de.dhbwka.swe.utils.event.GUIEvent;
-import de.dhbwka.swe.utils.event.IGUIEventListener;
-import de.dhbwka.swe.utils.event.IUpdateEventListener;
-import de.dhbwka.swe.utils.event.UpdateEvent;
-import de.dhbwka.swe.utils.gui.AttributeComponent;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 
+import javax.print.Doc;
 import javax.swing.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
-public class DocumentComponent extends ObservableComponent implements IGUIEventListener, IUpdateEventListener {
+public class DocumentComponent extends ObservableComponent {
 
 
-    @Override
-    public void processGUIEvent(GUIEvent guiEvent) {
+    JPanel documentComponent = new JPanel();
+    ArrayList<DocumentComponent> Documents = new ArrayList<>();
 
+    public DocumentComponent(ArrayList<DocumentComponent> Documents)
+    {
+        this.Documents = Documents;
     }
 
-    @Override
-    public void processUpdateEvent(UpdateEvent updateEvent) {
+    public JPanel initUI(){
+        this.documentComponent.setLayout(new javax.swing.BoxLayout(this, BoxLayout.Y_AXIS));
+        for(DocumentComponent doc : Documents){
+            this.documentComponent.add(documentComponent);
+        }
 
+        return this.documentComponent;
     }
+
+
 }

@@ -1,24 +1,17 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.print.Doc;
+import javax.swing.*;
 
 import control.CSControllerReinerObserverUndSender;
 import de.dhbwka.swe.utils.event.EventCommand;
 import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
-import de.dhbwka.swe.utils.event.IObservable;
 import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.UpdateEvent;
 import de.dhbwka.swe.utils.gui.*;
@@ -29,7 +22,6 @@ import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.IAppLogger;
 import de.dhbwka.swe.utils.util.IPropertyManager;
 import model.Kunde;
-import model.Standort;
 
 public class MainComponentMitTabbedPane extends ObservableComponent 
 		implements IGUIEventListener, IUpdateEventListener{
@@ -103,7 +95,9 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	private  ButtonComponent btnChng = null;
 	private JTabbedPane tabbedPane = new JTabbedPane();
-	private SlideshowComponent imgComp = null;
+
+	private DocumentElement persoComponent = new DocumentElement("Personalausweis", "src/main/resources/Images/Discobulus.jpg");
+	private DocumentElement führerescheinComponent = new DocumentElement("Führerschein", "src/main/resources/Images/Discobulus.jpg");
 	
 	public MainComponentMitTabbedPane( IPropertyManager propManager ) {
 //		if( propManager == null ) throw new IllegalArgumentException( "PropManager must not be null!");
@@ -153,25 +147,29 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		attComp.addObserver( this );
 		btnChng = createButtonComponentForAttr( attComp );
 		pnlKunde.add( btnChng, BorderLayout.EAST);
+		pnlKunde.add(createDocumentComponent(), BorderLayout.CENTER);
 
-		imgComp = createImageComponent(PRS);
-		pnlKunde.add(imgComp, BorderLayout.CENTER);
-		
+
+
 		return pnlKunde;
 	}
-	
+
+
+	private JPanel createDocumentComponent(){
+		JPanel DocumentComponent = new JPanel();
+		DocumentComponent.setLayout(new GridLayout(2, 1));
+		DocumentComponent.add(this.persoComponent.initUI());
+		DocumentComponent.add(this.führerescheinComponent.initUI());
+		return DocumentComponent;
+
+	}
+
 	private JPanel createBuchungTab() {
 		// Basispanel mit BorderLayout
 		JPanel pnlBuchung = new JPanel(new BorderLayout());
 		pnlBuchung.add(new JButton("@Todo"));
 		
 		return pnlBuchung;
-	}
-
-	private SlideshowComponent createImageComponent (String id){
-		return SlideshowComponent.builder( id )
-				.build();
-
 	}
 
 	private AttributeComponent createAttributeComponent( String id, String title, AttributeElement[] attElements) {
