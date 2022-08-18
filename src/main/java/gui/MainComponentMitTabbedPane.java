@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.print.Doc;
 import javax.swing.*;
 
 import control.CSControllerReinerObserverUndSender;
@@ -96,8 +95,14 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	private  ButtonComponent btnChng = null;
 	private JTabbedPane tabbedPane = new JTabbedPane();
 
-	private DocumentElement persoComponent = new DocumentElement("Personalausweis", "src/main/resources/Images/Discobulus.jpg");
-	private DocumentElement führerescheinComponent = new DocumentElement("Führerschein", "src/main/resources/Images/Discobulus.jpg");
+	private final String TTL_PRS = "Personalausweis";
+	private final String TTL_FHR = "Führerschein";
+
+	private String PTH_PRS = "D:\\SWE_Implementierung\\SWE\\src\\main\\resources\\Images\\Discobulus.jpg";
+	private String PTH_FHR = "D:\\SWE_Implementierung\\SWE\\src\\main\\resources\\Images\\Discobulus.jpg";
+
+	private DocumentComponent dcComp;
+
 	
 	public MainComponentMitTabbedPane( IPropertyManager propManager ) {
 //		if( propManager == null ) throw new IllegalArgumentException( "PropManager must not be null!");
@@ -147,7 +152,9 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		attComp.addObserver( this );
 		btnChng = createButtonComponentForAttr( attComp );
 		pnlKunde.add( btnChng, BorderLayout.EAST);
-		pnlKunde.add(createDocumentComponent(), BorderLayout.CENTER);
+		dcComp = createDocumentComponent();
+		dcComp.addObserver(this);
+		pnlKunde.add(dcComp, BorderLayout.CENTER);
 
 
 
@@ -155,13 +162,10 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	}
 
 
-	private JPanel createDocumentComponent(){
-		JPanel DocumentComponent = new JPanel();
-		DocumentComponent.setLayout(new GridLayout(2, 1));
-		DocumentComponent.add(this.persoComponent.initUI());
-		DocumentComponent.add(this.führerescheinComponent.initUI());
-		return DocumentComponent;
-
+	private DocumentComponent createDocumentComponent(){
+		return DocumentComponent.builder()
+				.documents(new ArrayList<>(Arrays.asList(new DocumentElement(TTL_PRS, PTH_PRS).initUI(), new DocumentElement(TTL_FHR, PTH_FHR).initUI())))
+				.build();
 	}
 
 	private JPanel createBuchungTab() {
@@ -256,6 +260,11 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 			System.out.println("Kunde: " + knd);
 			Attribute[] atsKunde = knd.getAttributeArray();
 			this.attComp.setAttributeElementValues( atsKunde );
+
+			this.dcComp.updatePaths(
+					new String[] {knd.getAttributeValueOf(Kunde.Attributes.PERSO),
+							knd.getAttributeValueOf(Kunde.Attributes.FUERERSCHEIN)});
+
 			System.out.println( atsKunde[0]);
 			return;
 		}
@@ -291,12 +300,17 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	@Override
 	public void processUpdateEvent(UpdateEvent ue) {
+
 		if( ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_KUNDEN ) {
 			List<Kunde> lstKunde = (List<Kunde>)ue.getData();
 			this.slc.setListElements(lstKunde, true);
 			if( lstKunde.size() > 0 ) {
 				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird) 
 				this.attComp.setAttributeElementValues( lstKunde.get(0).getAttributeArray() );
+
+				this.dcComp.updatePaths(
+						new String[] {lstKunde.get(0).getAttributeValueOf(Kunde.Attributes.PERSO),
+								lstKunde.get(0).getAttributeValueOf(Kunde.Attributes.FUERERSCHEIN)});
 			}
 		}
 	}
