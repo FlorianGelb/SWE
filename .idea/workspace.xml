@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8853578-1546-43ba-86e1-987cda982448" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/MainComponentMitTabbedPane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/MainComponentMitTabbedPane.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Kunde.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Kunde.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Person.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +119,7 @@
       <workItem from="1660760148705" duration="849000" />
       <workItem from="1660842695919" duration="12095000" />
       <workItem from="1661275035989" duration="3025000" />
-      <workItem from="1661366840730" duration="3522000" />
+      <workItem from="1661366840730" duration="3912000" />
     </task>
     <servers />
   </component>
