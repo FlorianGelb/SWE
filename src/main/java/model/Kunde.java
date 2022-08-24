@@ -41,7 +41,6 @@ public class Kunde implements IDepictable, IPersistable {
 	 *
 	 */
 	public enum Attributes {
-
 		/**
 		 * Attribute erzeugen, die folgende Einstellungen haben:
 		 * Name, Klasse (Typ), sichtbar, aenderbar, editierbar

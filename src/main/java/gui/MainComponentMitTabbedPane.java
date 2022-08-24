@@ -98,9 +98,6 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	private final String TTL_PRS = "Personalausweis";
 	private final String TTL_FHR = "Führerschein";
 
-	private String PTH_PRS = "D:\\SWE_Implementierung\\SWE\\src\\main\\resources\\Images\\Discobulus.jpg";
-	private String PTH_FHR = "D:\\SWE_Implementierung\\SWE\\src\\main\\resources\\Images\\Discobulus.jpg";
-
 	private DocumentComponent dcComp;
 
 	
@@ -164,7 +161,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	private DocumentComponent createDocumentComponent(){
 		return DocumentComponent.builder()
-				.documents(new ArrayList<>(Arrays.asList(new DocumentElement(TTL_PRS, PTH_PRS).initUI(), new DocumentElement(TTL_FHR, PTH_FHR).initUI())))
+				.documents(new ArrayList<>(Arrays.asList(new DocumentElement(TTL_PRS, "").initUI(), new DocumentElement(TTL_FHR, "").initUI())))
 				.build();
 	}
 
