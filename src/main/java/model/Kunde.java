@@ -26,7 +26,11 @@ public class Kunde implements IDepictable, IPersistable {
 		VORNAME,
 		NACHNAME,
 		ENGAGIERT,
-		BESCHREIBUNG
+		BESCHREIBUNG,
+
+		PERSO,
+
+		FUERERSCHEIN
 	}
 
 	
@@ -37,7 +41,6 @@ public class Kunde implements IDepictable, IPersistable {
 	 *
 	 */
 	public enum Attributes {
-
 		/**
 		 * Attribute erzeugen, die folgende Einstellungen haben:
 		 * Name, Klasse (Typ), sichtbar, aenderbar, editierbar
@@ -46,7 +49,11 @@ public class Kunde implements IDepictable, IPersistable {
 		VORNAME( "Vorname", String.class, true, true, true ),
 		NACHNAME( "Nachname", String.class, true, true, true ),
 		ENGAGIERT( "engagiert", Boolean.class, true, true, true ),
-		BESCHREIBUNG( "Beschreibung", String.class, true, true, true );
+		BESCHREIBUNG( "Beschreibung", String.class, true, true, true ),
+
+		PERSO("Personalausweis", String.class, true, true, true),
+
+		FUERERSCHEIN("Fuererschein", String.class, true, true, true);
 
 		private String name;
 		private boolean visible;
@@ -106,11 +113,11 @@ public class Kunde implements IDepictable, IPersistable {
 	 * Default-Konstruktor
 	 */
 	public Kunde() {
-		this( null, null, null, "--", false );
+		this( null, null, null, "--", false, "--", "--"  );
 	}
 	
 	public Kunde( String vorName, String nachName ) {
-		this( null, vorName, nachName, "--", false );
+		this( null, vorName, nachName, "--", false, "--", "--" );
 	}
 
 	public Kunde( String vorName, String nachName, String description ) {
@@ -135,8 +142,23 @@ public class Kunde implements IDepictable, IPersistable {
 		this.attArr[ Attributes.ID.ordinal() ] = Attributes.ID.createAttribute( this, ( iD == null || iD.isEmpty() ? randID : iD ), randID );
 		this.attArr[ Attributes.NACHNAME.ordinal() ] = Attributes.NACHNAME.createAttribute( this, nachName, "--" );
 		this.attArr[ Attributes.VORNAME.ordinal() ] = Attributes.VORNAME.createAttribute( this, vorName, "--" );
+		this.attArr[ Attributes.BESCHREIBUNG.ordinal() ] = Attributes.BESCHREIBUNG.createAttribute( this, description, "--" );
+		this.attArr[ Attributes.ENGAGIERT.ordinal() ] = Attributes.ENGAGIERT.createAttribute(this, engaged, "--" );
+	}
+
+	public Kunde( String iD, String vorName, String nachName, String description, boolean engaged, String perso, String fuehrerschein ) {
+		super();
+
+		boolean modifiable = true;
+
+		String randID = UUID.randomUUID().toString();
+		this.attArr[ Attributes.ID.ordinal() ] = Attributes.ID.createAttribute( this, ( iD == null || iD.isEmpty() ? randID : iD ), randID );
+		this.attArr[ Attributes.NACHNAME.ordinal() ] = Attributes.NACHNAME.createAttribute( this, nachName, "--" );
+		this.attArr[ Attributes.VORNAME.ordinal() ] = Attributes.VORNAME.createAttribute( this, vorName, "--" );
 		this.attArr[ Attributes.BESCHREIBUNG.ordinal() ] = Attributes.BESCHREIBUNG.createAttribute( this, description, "" );
-		this.attArr[ Attributes.ENGAGIERT.ordinal() ] = Attributes.ENGAGIERT.createAttribute(this, engaged, Boolean.TRUE );
+		this.attArr[ Attributes.ENGAGIERT.ordinal() ] = Attributes.ENGAGIERT.createAttribute(this, engaged, "--" );
+		this.attArr[ Attributes.PERSO.ordinal() ] = Attributes.PERSO.createAttribute(this, perso, "");
+			this.attArr[ Attributes.FUERERSCHEIN.ordinal() ] = Attributes.FUERERSCHEIN.createAttribute(this, fuehrerschein, "" );
 	}
 
 	public <T> T getAttributeValueOf( Attributes attribute ) {

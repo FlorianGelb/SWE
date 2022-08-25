@@ -65,8 +65,11 @@ public class ElementFactory {
 			String vorName = csvData[ Kunde.CSVPositions.VORNAME.ordinal() ];
 			String beschreibung = csvData[ Kunde.CSVPositions.BESCHREIBUNG.ordinal() ];
 			String engagiert = csvData[ Kunde.CSVPositions.ENGAGIERT.ordinal() ];
+			String perso = csvData[Kunde.CSVPositions.PERSO.ordinal()];
+			String fuehrerschein = csvData[Kunde.CSVPositions.FUERERSCHEIN.ordinal()];
 			
-			persistableElement = new Kunde( id, vorName, nachName, beschreibung, Boolean.getBoolean(engagiert) );
+			persistableElement = new Kunde( id, vorName, nachName, beschreibung, Boolean.getBoolean(engagiert),
+					perso, fuehrerschein);
 			/**
 			 * hier kämen dann die N:M-Beziehungen hin, s.u. bei Person und Gruppe
 			 */

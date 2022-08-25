@@ -123,6 +123,11 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		
 		csvData.forEach( e -> { 
 			try {
+				if (e.length == 7){
+					e[5] =  this.getClass().getResource(e[5]).getPath();
+					e[6] =  this.getClass().getResource(e[6]).getPath();
+				}
+
 				elementFactory.createElement(Kunde.class, e);
 			} catch (Exception e1) {
 				e1.printStackTrace();

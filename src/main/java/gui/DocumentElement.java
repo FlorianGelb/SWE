@@ -1,15 +1,17 @@
 package gui;
 
-import de.dhbwka.swe.utils.event.*;
-import java.awt.image.BufferedImage;
+import de.dhbwka.swe.utils.gui.ObservableComponent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class DocumentElement implements IUpdateEventListener {
+
+public class DocumentElement extends ObservableComponent  {
+
     private String path;
     private String title;
 
@@ -17,29 +19,26 @@ public class DocumentElement implements IUpdateEventListener {
 
     private Label titleLabel;
 
-    private JPanel base = new JPanel();
-
-
 
     public DocumentElement(String title, String path) {
         if (title != null) {
             this.title = title;
             titleLabel = new Label(title);
         }
-
         if (path != null){
             this.path = path;
         }
     }
 
 
-    public JPanel initUI(){
-        this.base.setLayout(new javax.swing.BoxLayout(this.base, BoxLayout.Y_AXIS));
-        this.base.add(titleLabel);
+    public DocumentElement initUI(){
+        this.setLayout(new GridLayout(2, 1));
+        this.add(titleLabel);
         loadImage(null);
-        this.base.add(this.documentImage);
-        return this.base;
+        this.add(this.documentImage);
+        return this;
     }
+
 
     public void loadImage(String path){
         if (path != null){
@@ -56,16 +55,15 @@ public class DocumentElement implements IUpdateEventListener {
         }
 
 
+    this.repaint();
     }
 
     public String  getPath(){
         return this.path;
     }
-
     public String getTitle(){
         return this.title;
     }
-
 
     public void setValues(String[] vals){
         this.setPath(vals[0]);
@@ -81,38 +79,5 @@ public class DocumentElement implements IUpdateEventListener {
 
     }
 
-    private enum Commands  implements EventCommand {
-        VALUE_CHANGED("AttributeComponent.valueChanged", DocumentElement.class),
-        SELECTION_CHANGED("AttributeComponent.selectionChanged", DocumentElement.class);
-
-        public final Class<?> payloadType;
-        public final String cmdText;
-
-        private Commands(String cmdText, Class payloadType) {
-            this.cmdText = cmdText;
-            this.payloadType = payloadType;
-        }
-
-        public String getCmdText() {
-            return this.cmdText;
-        }
-
-        public Class<?> getPayloadType() {
-            return this.payloadType;
-        }
-
-    }
-
-    @Override
-    public void processUpdateEvent(UpdateEvent updateEvent){
-
-        if(updateEvent.getCmd() == Commands.SELECTION_CHANGED || updateEvent.getCmd() == Commands.VALUE_CHANGED ){
-
-            this.setValues((String[])updateEvent.getData());
-
-        }
-
-
-    }
 
 }
