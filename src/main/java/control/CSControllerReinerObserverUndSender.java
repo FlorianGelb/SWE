@@ -24,6 +24,7 @@ import de.dhbwka.swe.utils.util.IAppLogger;
 import gui.MainComponent;
 import gui.MainComponentMitTabbedPane;
 import model.Kunde;
+import model.Buchung;
 import model.Standort;
 import util.ElementFactory;
 
@@ -39,7 +40,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		/**
 		 * Command:  ID + gelieferter Payload-Typ
 		 */
-		SET_KUNDEN( "Controller.setKunden", List.class );
+		SET_KUNDEN( "Controller.setKunden", List.class ),
+		SET_BUCHUNG("Controller.setBuchung", List.class);
 
 		public final Class<?> payloadType;
 		public final String cmdText;
@@ -103,6 +105,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		try {
 			loadCSVData();
 			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+			fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNG, entityManager.findAll(Buchung.class)));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -120,8 +123,21 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		String filePath = this.getClass().getResource("/CSVFiles/Kunden.csv").getPath();  // ohne "file:" am Anfang
 		CSVReader csvReader = new CSVReader( filePath );
 		List<String[]> csvData = csvReader.readData();
-		
-		csvData.forEach( e -> { 
+
+		String filePathBuchung = this.getClass().getResource("/CSVFiles/Buchungen.csv").getPath();  // ohne "file:" am Anfang
+		CSVReader csvReaderBuchung = new CSVReader( filePathBuchung );
+		List<String[]> csvDataBuchung = csvReaderBuchung.readData();
+
+		csvDataBuchung.forEach( e -> {
+			try {
+
+				elementFactory.createElement(Buchung.class, e);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		});
+
+		csvData.forEach( e -> {
 			try {
 				if (e.length == 7){
 					e[5] =  this.getClass().getResource(e[5]).getPath();
@@ -159,6 +175,19 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				// element wird erzeugt und in ElementManager gespeichert
 				elementFactory.createElement(Kunde.class, kundenAtts);
 				fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_BUCHUNG ) {
+			logger.debug( ge.getData().toString() );
+			String[] buchungAtts = (String[])ge.getData();
+			try {
+				// element wird erzeugt und in ElementManager gespeichert
+				elementFactory.createElement(Buchung.class, buchungAtts);
+				fireUpdateEvent( new UpdateEvent(this, Commands.SET_BUCHUNG, entityManager.findAll( Buchung.class) ) );
 
 			} catch (Exception e) {
 				e.printStackTrace();

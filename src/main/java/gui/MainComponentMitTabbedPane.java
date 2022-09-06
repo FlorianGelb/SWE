@@ -20,6 +20,7 @@ import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.IAppLogger;
 import de.dhbwka.swe.utils.util.IPropertyManager;
+import model.Buchung;
 import model.Kunde;
 
 public class MainComponentMitTabbedPane extends ObservableComponent 
@@ -37,6 +38,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		 */
 		SAVE_KUNDEN( "MainComponent.saveAllKunden", null ), // reiner Befehl ohne Payload 
 		ADD_KUNDE( "MainComponent.addKunde", String[].class ),
+		ADD_BUCHUNG("MainComponent.addBuchung", String[].class),
 		REMOVE_KUNDE( "MainComponent.removeKunde", IDepictable.class );
 
 		public final Class<?> payloadType;
@@ -74,23 +76,37 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	private final static String BTN_ADD_LL = "AddElement2LeftList";
 	private final static String BTN_REMOVE_LL = "RemoveElementFromLeftList";
 
+	private final static String BTN_ADD_LL_BUCHUNG = "AddElement2LeftListB";
+	private final static String BTN_REMOVE_LL_BUCHUNG = "RemoveElementFromLeftListB";
 	private final static String BTN_CHANGE_ATR = "ChangeAttrCustomer";
 	
 	public final static String SLC = "SimpleListComponent-1";
-	public final static String ATTC = "AttributeComponent-1";
-	public final static String BTC = "ButtonComponent-1";
 
-	public final static String PRS = "PersoSlideComponent";
+	public final static String SLC_BUCHUNG = "SimpleListComponent-2";
+	public final static String ATTC = "AttributeComponent-1";
+	public final static String ATTCB = "AttributeComponent-1";
+	public final static String BTC = "ButtonComponent-1";
 	public final static String LBL_ATTC_KUNDE = "Attribute des Kunden";
+
+	public final static String LBL_ATTC_BUCHUNG = "Attribute der Buchung";
 	public final static String LBL_SLC_KUNDE = "Alle Kunden";
-	
+
+	public final static String LBL_SLC_BUCHUNG = "Alle Buchungen";
+
 	public final static String TAB_KUNDE = "Kunden";
 	public final static String TAB_BUCHUNG = "Buchungen";
 	private final static Dimension attCompSize =new Dimension(350,500);
 
 	private SimpleListComponent slc = null;
+
+	private SimpleListComponent slc_buchung = null;
+
 	private AttributeComponent attComp = null;
+
+	private AttributeComponent attCompBuchung = null;
 	private ButtonComponent btnComp = null;
+
+	private ButtonComponent btnCompB = null;
 
 	private  ButtonComponent btnChng = null;
 	private JTabbedPane tabbedPane = new JTabbedPane();
@@ -138,7 +154,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				.build();
 		slc.setPreferredSize( new Dimension(200, 500) );
 		
-		btnComp = createButtonComponentForLeftList( slc );
+		btnComp = createButtonComponentForLeftList( slc, BTN_ADD_LL, BTN_REMOVE_LL );
 		pnlKunde.add( btnComp, BorderLayout.WEST );
 		slc.addObserver( this );
 		Kunde initKunde = new Kunde();
@@ -153,8 +169,6 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		dcComp.addObserver(this);
 		pnlKunde.add(dcComp, BorderLayout.CENTER);
 
-
-
 		return pnlKunde;
 	}
 
@@ -168,8 +182,21 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	private JPanel createBuchungTab() {
 		// Basispanel mit BorderLayout
 		JPanel pnlBuchung = new JPanel(new BorderLayout());
-		pnlBuchung.add(new JButton("@Todo"));
-		
+		slc_buchung = SimpleListComponent.builder( SLC_BUCHUNG)
+				.propManager( this.propManager )
+				.title( LBL_SLC_BUCHUNG )
+				.build();
+		slc_buchung.setPreferredSize( new Dimension(200, 500) );
+
+		slc_buchung.addObserver(this);
+
+		btnCompB = createButtonComponentForLeftList( slc_buchung, BTN_ADD_LL_BUCHUNG, BTN_REMOVE_LL_BUCHUNG );
+		pnlBuchung.add( btnCompB, BorderLayout.WEST );
+		Buchung initBuchung = new Buchung();
+
+		attCompBuchung =  createAttributeComponent( ATTCB, LBL_ATTC_BUCHUNG, createAttributeElementsFor( initBuchung ) );
+		pnlBuchung.add(attCompBuchung, BorderLayout.EAST);
+
 		return pnlBuchung;
 	}
 
@@ -180,12 +207,12 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				.build();
 	}
 	
-	private ButtonComponent createButtonComponentForLeftList( SimpleListComponent slc ) {
+	private ButtonComponent createButtonComponentForLeftList( SimpleListComponent slc, String ID1, String ID2 ) {
 		ButtonElement[] beArr = new ButtonElement[] {
-			ButtonElement.builder( BTN_ADD_LL )
+			ButtonElement.builder( ID1 )
 			.buttonText( "Anlegen" )
 			.build(),
-			ButtonElement.builder( BTN_REMOVE_LL )
+			ButtonElement.builder( ID2 )
 			.buttonText( "Löschen" )
 			.build()
 		};
@@ -251,19 +278,20 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		 * wieder zurückzusenden (processUpdateEvent()).
 		 */
 		if( ge.getCmdText().equals( SimpleListComponent.Commands.ELEMENT_SELECTED.cmdText )) {
-			if( ge.getData() instanceof Kunde )
+			if( ge.getData() instanceof Kunde ) {
 				System.out.println("es ist ein Kunde");
-			Kunde knd = (Kunde)ge.getData();
-			System.out.println("Kunde: " + knd);
-			Attribute[] atsKunde = knd.getAttributeArray();
-			this.attComp.setAttributeElementValues( atsKunde );
+				Kunde knd = (Kunde) ge.getData();
+				System.out.println("Kunde: " + knd);
+				Attribute[] atsKunde = knd.getAttributeArray();
+				this.attComp.setAttributeElementValues(atsKunde);
 
-			this.dcComp.updatePaths(
-					new String[] {knd.getAttributeValueOf(Kunde.Attributes.PERSO),
-							knd.getAttributeValueOf(Kunde.Attributes.FUERERSCHEIN)});
+				this.dcComp.updatePaths(
+						new String[]{knd.getAttributeValueOf(Kunde.Attributes.PERSO),
+								knd.getAttributeValueOf(Kunde.Attributes.FUERERSCHEIN)});
 
-			System.out.println( atsKunde[0]);
-			return;
+				System.out.println(atsKunde[0]);
+				return;
+			}
 		}
 		if( ge.getSource() == this.btnComp ) {
 			ButtonElement be = (ButtonElement)ge.getData();
@@ -288,6 +316,25 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 					fireGUIEvent( new GUIEvent(this, Commands.ADD_KUNDE, attVals ));
 				}
 			}
+
+		}
+
+		if( ge.getSource() == this.btnCompB) {
+			ButtonElement be = (ButtonElement) ge.getData();
+
+			if (be.getID().equals(BTN_ADD_LL_BUCHUNG)) {
+				// build and show an AtributeComponent for input
+				Buchung initBuchung = new Buchung();
+				initBuchung.getAttributeArray();
+				AttributeComponent attC = createAttributeComponent("input", LBL_ATTC_BUCHUNG, createAttributeElementsFor(initBuchung));
+				attC.setPreferredSize(attCompSize);
+				if (JOptionPane.showConfirmDialog(this, attC, "bitte die Buchungsdaten eintragen", JOptionPane.OK_CANCEL_OPTION)
+						== JOptionPane.OK_OPTION) {
+					String[] attVals = attC.getAttributeValuesAsArray();
+					Arrays.asList(attVals).forEach(e -> logger.debug(e));
+					fireGUIEvent(new GUIEvent(this, Commands.ADD_BUCHUNG, attVals));
+				}
+			}
 		}
 		/**
 		 * wenn nichts gemacht wird: an den Controller weiterleiten ...
@@ -309,6 +356,18 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 						new String[] {lstKunde.get(0).getAttributeValueOf(Kunde.Attributes.PERSO),
 								lstKunde.get(0).getAttributeValueOf(Kunde.Attributes.FUERERSCHEIN)});
 			}
+		}
+
+		if(ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BUCHUNG){
+			List<Buchung> lstBuchung = (List<Buchung>)ue.getData();
+			this.slc_buchung.setListElements(lstBuchung, true);
+
+			if( lstBuchung.size() > 0 ) {
+				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird)
+				this.attCompBuchung.setAttributeElementValues( lstBuchung.get(0).getAttributeArray() );
+
+			}
+
 		}
 	}
 	

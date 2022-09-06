@@ -14,7 +14,7 @@ public class Buchung implements IDepictable, IPersistable {
 
     @Override
     public String getElementID() {
-        return this.attArr[ Kunde.Attributes.ID.ordinal() ].getValue().toString();
+        return this.attArr[ Buchung.Attributes.ID.ordinal() ].getValue().toString();
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Buchung implements IDepictable, IPersistable {
 
     @Override
     public Object getPrimaryKey() {
-        return this.attArr[ Kunde.Attributes.ID.ordinal() ].getValue();
+        return this.attArr[ Buchung.Attributes.ID.ordinal() ].getValue();
     }
 
     public enum CSVPositions{
@@ -106,9 +106,13 @@ public class Buchung implements IDepictable, IPersistable {
         return names.toArray( new String[ names.size() ] );
     }
 
-    private Attribute[] attArr = new Attribute[ Kunde.Attributes.values().length ];
+    private Attribute[] attArr = new Attribute[ Buchung.Attributes.values().length ];
     public Buchung(String iD, String benennung,  String description){
         this(iD, benennung, LocalDate.now().toString(), LocalDate.now().toString(), description);
+    }
+
+    public Buchung() {
+        this( "", "", "", "", "");
     }
     public Buchung(String iD, String benennung, String start, String end, String description){
         boolean modifiable = true;
