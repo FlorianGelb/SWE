@@ -1,4 +1,4 @@
 #ID;Name;Vorname;engagiert;Beschreibung;Personalausweis;Fuererschein;
-k-1;Bald;Willi;true;Erster Kunde;/Images/Discobulus.jpg;/Images/Discobulus.jpg;
+k-1;Bald;Willi;true;Erster Kunde;/Images/perso.jpg;/Images/fuhrerschein.jpg;
 k-2;Conda;Anna;false;Zweite Kundin;/Images/Martin-Luther.jpg;/Images/Martin-Luther.jpg;
 k-3;Branntwein;Franz;true;dritter Kunde;/Images/Nofretete.jpg;/Images/Nofretete.jpg;

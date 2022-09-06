@@ -8,7 +8,10 @@ import de.dhbwka.swe.utils.model.Gruppe;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
+import model.Buchung;
 import model.Kunde;
+
+import javax.management.MBeanServerConnection;
 
 public class ElementFactory {
 
@@ -59,6 +62,17 @@ public class ElementFactory {
 		if (c == null) {
 			throw new IllegalArgumentException("Klasse muss angegeben werden ( Klasse ist null )!");
 		}
+
+		else if(c == Buchung.class){
+			String id = csvData[Buchung.CSVPositions.ID.ordinal()];
+			String benennung = csvData[Buchung.CSVPositions.ID.ordinal()];
+			String start = csvData[Buchung.CSVPositions.ID.ordinal()];
+			String ende = csvData[Buchung.CSVPositions.ID.ordinal()];
+			String beschreibung = csvData[Buchung.CSVPositions.ID.ordinal()];
+
+			persistableElement = new Buchung(id, benennung, start, ende, beschreibung);
+		}
+
 		else if( c == Kunde.class ) {
 			String id = csvData[ Kunde.CSVPositions.ID.ordinal() ];
 			String nachName = csvData[ Kunde.CSVPositions.NACHNAME.ordinal() ];
