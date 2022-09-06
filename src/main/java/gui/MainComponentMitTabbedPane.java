@@ -22,6 +22,7 @@ import de.dhbwka.swe.utils.util.IAppLogger;
 import de.dhbwka.swe.utils.util.IPropertyManager;
 import model.Buchung;
 import model.Kunde;
+import model.Standort;
 
 public class MainComponentMitTabbedPane extends ObservableComponent 
 		implements IGUIEventListener, IUpdateEventListener{
@@ -78,35 +79,53 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	private final static String BTN_ADD_LL_BUCHUNG = "AddElement2LeftListB";
 	private final static String BTN_REMOVE_LL_BUCHUNG = "RemoveElementFromLeftListB";
+	private final static String BTN_ADD_LL_STANDORT = "AddElement2LeftListB";
+	private final static String BTN_REMOVE_LL_STANDORT = "RemoveElementFromLeftListB";
 	private final static String BTN_CHANGE_ATR = "ChangeAttrCustomer";
 	
 	public final static String SLC = "SimpleListComponent-1";
 
 	public final static String SLC_BUCHUNG = "SimpleListComponent-2";
+	public final static String SLC_STANDORT = "SimpleListComponent-2";
+
 	public final static String ATTC = "AttributeComponent-1";
 	public final static String ATTCB = "AttributeComponent-1";
+	public final static String ATTCS = "AttributeComponent-1";
 	public final static String BTC = "ButtonComponent-1";
 	public final static String LBL_ATTC_KUNDE = "Attribute des Kunden";
 
 	public final static String LBL_ATTC_BUCHUNG = "Attribute der Buchung";
+
+	public final static String LBL_ATTC_STANDORT = "Attribute des Standortes";
+
 	public final static String LBL_SLC_KUNDE = "Alle Kunden";
 
 	public final static String LBL_SLC_BUCHUNG = "Alle Buchungen";
 
+	public final static String LBL_SLC_STANDORT = "Alle Standorte";
+
 	public final static String TAB_KUNDE = "Kunden";
 	public final static String TAB_BUCHUNG = "Buchungen";
+	public final static String TAB_STANDORT = "Standorte";
+
 	private final static Dimension attCompSize =new Dimension(350,500);
 
 	private SimpleListComponent slc = null;
 
 	private SimpleListComponent slc_buchung = null;
 
+	private SimpleListComponent slc_standort = null;
+
 	private AttributeComponent attComp = null;
 
 	private AttributeComponent attCompBuchung = null;
+	private AttributeComponent attCompStandort = null;
+
 	private ButtonComponent btnComp = null;
 
 	private ButtonComponent btnCompB = null;
+
+	private ButtonComponent btnCompS = null;
 
 	private  ButtonComponent btnChng = null;
 	private JTabbedPane tabbedPane = new JTabbedPane();
@@ -138,7 +157,8 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		
 		this.tabbedPane.add( TAB_KUNDE, createKundenTab() );
 		this.tabbedPane.add( TAB_BUCHUNG, createBuchungTab() );
-		
+		this.tabbedPane.add( TAB_STANDORT, createStandortTab() );
+
 		this.add(tabbedPane);
 		
 	}
@@ -198,6 +218,27 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		pnlBuchung.add(attCompBuchung, BorderLayout.EAST);
 
 		return pnlBuchung;
+	}
+
+	private JPanel createStandortTab() {
+		// Basispanel mit BorderLayout
+		JPanel pnlStandort = new JPanel(new BorderLayout());
+		slc_standort = SimpleListComponent.builder( SLC_STANDORT)
+				.propManager( this.propManager )
+				.title( LBL_SLC_STANDORT )
+				.build();
+		slc_standort.setPreferredSize( new Dimension(200, 500) );
+
+		slc_standort.addObserver(this);
+
+		btnCompS = createButtonComponentForLeftList( slc_standort, BTN_ADD_LL_STANDORT, BTN_REMOVE_LL_STANDORT );
+		pnlStandort.add( btnCompS, BorderLayout.WEST );
+		Standort initStandort = new Standort();
+
+		attCompStandort =  createAttributeComponent( ATTCS, LBL_ATTC_STANDORT, createAttributeElementsFor( initStandort ) );
+		pnlStandort.add(attCompStandort, BorderLayout.EAST);
+
+		return pnlStandort;
 	}
 
 	private AttributeComponent createAttributeComponent( String id, String title, AttributeElement[] attElements) {
