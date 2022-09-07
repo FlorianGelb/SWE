@@ -124,15 +124,13 @@ public class Fahrzeug implements IDepictable, IPersistable {
 		return names.toArray( new String[ names.size() ] );
 	}
 
-	private Attribute[] attArr = new Attribute[ Buchung.Attributes.values().length ];
+	private Attribute[] attArr = new Attribute[ Fahrzeug.Attributes.values().length ];
 
 	public Fahrzeug() {
 		this( "", "", "", "", "");
 	}
 	public Fahrzeug(String kennzeichen, String marke, String farbe, String kraftstoff, String getriebe){
 		boolean modifiable = true;
-		LocalDateTime ldtStart = LocalDateTime.now();
-		LocalDateTime ldtEnd = LocalDateTime.now();
 		String randID = UUID.randomUUID().toString();
 		this.attArr[ Attributes.KENNZEICHEN.ordinal() ] = Attributes.KENNZEICHEN.createAttribute( this, ( kennzeichen == null || kennzeichen.isEmpty() ? randID : kennzeichen ), randID );
 		this.attArr[ Attributes.MARKE.ordinal() ] = Attributes.MARKE.createAttribute( this, marke, "Skoda");
