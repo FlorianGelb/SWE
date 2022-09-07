@@ -1,9 +1,7 @@
 package control;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
+import java.util.*;
 import java.net.URL;
 
 import de.dhbwka.swe.utils.event.EventCommand;
@@ -23,10 +21,10 @@ import de.dhbwka.swe.utils.util.GenericEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
 import gui.MainComponent;
 import gui.MainComponentMitTabbedPane;
-import model.Kunde;
-import model.Buchung;
-import model.Standort;
+import model.*;
 import util.ElementFactory;
+
+import javax.swing.*;
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
 	
@@ -41,7 +39,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		 * Command:  ID + gelieferter Payload-Typ
 		 */
 		SET_KUNDEN( "Controller.setKunden", List.class ),
-		SET_BUCHUNG("Controller.setBuchung", List.class);
+		SET_BUCHUNG("Controller.setBuchung", List.class),
+		SET_BUCHUNG_KUNDEN("Controller.setBuchungKunden", List.class);
 
 		public final Class<?> payloadType;
 		public final String cmdText;
@@ -106,6 +105,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			loadCSVData();
 			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
 			fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNG, entityManager.findAll(Buchung.class)));
+			System.out.println(0);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -120,35 +120,44 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		 * exemplarisch für Kunden: Daten lesen, in den EntityManager speichern
 		 * und dann im UpdateEvent an die Main-GUI senden
 		 */
-		String filePath = this.getClass().getResource("/CSVFiles/Kunden.csv").getPath();  // ohne "file:" am Anfang
-		CSVReader csvReader = new CSVReader( filePath );
-		List<String[]> csvData = csvReader.readData();
 
-		String filePathBuchung = this.getClass().getResource("/CSVFiles/Buchungen.csv").getPath();  // ohne "file:" am Anfang
-		CSVReader csvReaderBuchung = new CSVReader( filePathBuchung );
-		List<String[]> csvDataBuchung = csvReaderBuchung.readData();
+		HashMap<Integer, Class> pathKeysClass = new HashMap<>();
+		pathKeysClass.put(0, Kunde.class);
+		pathKeysClass.put(1, Organisator.class);
+		pathKeysClass.put(2, Fahrzeug.class);
+		pathKeysClass.put(3, Buchung.class);
 
-		csvDataBuchung.forEach( e -> {
-			try {
 
-				elementFactory.createElement(Buchung.class, e);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		});
+		Map<Integer, String> paths = new TreeMap<>();
+		paths.put(0, "/CSVFiles/Kunden.csv");
+		paths.put(1, "/CSVFiles/Organisator.csv");
+		paths.put(2, "/CSVFiles/Fahrzeug.csv");
+		paths.put(3, "/CSVFiles/Buchungen.csv");
 
-		csvData.forEach( e -> {
-			try {
-				if (e.length == 7){
-					e[5] =  this.getClass().getResource(e[5]).getPath();
-					e[6] =  this.getClass().getResource(e[6]).getPath();
+
+		for(int key: paths.keySet()){
+			String path = paths.get(key);
+			Class clazz = pathKeysClass.get(key);
+			String filePath = this.getClass().getResource(path).getPath();  // ohne "file:" am Anfang
+			CSVReader csvReader = new CSVReader( filePath );
+			List<String[]> csvData = csvReader.readData();
+			csvData.forEach( e -> {
+				try {
+					if (e.length == 7 && clazz == Kunde.class){
+						e[5] =  this.getClass().getResource(e[5]).getPath();
+						e[6] =  this.getClass().getResource(e[6]).getPath();
+					}
+
+					elementFactory.createElement(clazz, e);
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
+			});
 
-				elementFactory.createElement(Kunde.class, e);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		});
+
+		}
+
+
 	}
 
 	// fuer alle GUI-Elemente, die aktualisiert werden sollen:
@@ -186,8 +195,32 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			String[] buchungAtts = (String[])ge.getData();
 			try {
 				// element wird erzeugt und in ElementManager gespeichert
-				elementFactory.createElement(Buchung.class, buchungAtts);
-				fireUpdateEvent( new UpdateEvent(this, Commands.SET_BUCHUNG, entityManager.findAll( Buchung.class) ) );
+				Kunde kunde = (Kunde)entityManager.find(Kunde.class, buchungAtts[Buchung.CSVPositions.KUNDENID.ordinal()]);
+				Fahrzeug fahrzeug = (Fahrzeug)entityManager.find(Fahrzeug.class, buchungAtts[Buchung.CSVPositions.KENNZEICHEN.ordinal()]);
+				Organisator organisator = (Organisator)entityManager.find(Organisator.class, buchungAtts[Buchung.CSVPositions.ORGANISATORID.ordinal()]);
+
+				if(kunde != null && fahrzeug != null && organisator != null) {
+					elementFactory.createElement(Buchung.class, buchungAtts);
+					buchungAtts[Buchung.CSVPositions.KUNDENID.ordinal()] = kunde.toString();
+					buchungAtts[Buchung.CSVPositions.KENNZEICHEN.ordinal()] = fahrzeug.toString();
+					buchungAtts[Buchung.CSVPositions.ORGANISATORID.ordinal()] = organisator.toString();
+
+					fireUpdateEvent( new UpdateEvent(this, Commands.SET_BUCHUNG, entityManager.findAll( Buchung.class) ) );
+				}
+				else{
+					if(kunde == null){
+						JOptionPane.showMessageDialog(null, "Ungültige KundenID: " +  buchungAtts[Buchung.CSVPositions.KUNDENID.ordinal()], "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
+					else if(fahrzeug == null){
+						JOptionPane.showMessageDialog(null, "Ungültiges Fahrzeug: " +  buchungAtts[Buchung.CSVPositions.KENNZEICHEN.ordinal()], "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
+					else if(organisator == null){
+						JOptionPane.showMessageDialog(null, "Ungültige OrganisatorID: " +  buchungAtts[Buchung.CSVPositions.ORGANISATORID.ordinal()], "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
+
+				}
+
+
 
 			} catch (Exception e) {
 				e.printStackTrace();
