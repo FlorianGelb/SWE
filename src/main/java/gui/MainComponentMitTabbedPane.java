@@ -22,6 +22,7 @@ import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.IAppLogger;
 import de.dhbwka.swe.utils.util.IPropertyManager;
 import model.Buchung;
+import model.Fahrzeug;
 import model.Kunde;
 import model.Standort;
 
@@ -81,13 +82,21 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	private final static String BTN_ADD_LL_BUCHUNG = "AddElement2LeftListB";
 	private final static String BTN_REMOVE_LL_BUCHUNG = "RemoveElementFromLeftListB";
 	private final static String BTN_ADD_LL_STANDORT = "AddElement2LeftListB";
+
+	private final static String BTN_ADD_LL_FAHRZEUG = "AddElement2LeftListB";
+
 	private final static String BTN_REMOVE_LL_STANDORT = "RemoveElementFromLeftListB";
+
+	private final static String BTN_REMOVE_LL_FAHRZEUG = "RemoveElementFromLeftListB";
+
 	private final static String BTN_CHANGE_ATR = "ChangeAttrCustomer";
 	
 	public final static String SLC = "SimpleListComponent-1";
 
 	public final static String SLC_BUCHUNG = "SimpleListComponent-2";
 	public final static String SLC_STANDORT = "SimpleListComponent-2";
+
+	public final static String SLC_FAHRZEUG = "SimpleListComponent-2";
 
 	public final static String ATTC = "AttributeComponent-1";
 	public final static String ATTCB = "AttributeComponent-1";
@@ -99,15 +108,24 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	public final static String LBL_ATTC_STANDORT = "Attribute des Standortes";
 
+	public final static String LBL_ATTC_FAHRZEUG = "Attribute des Standortes";
+
+
 	public final static String LBL_SLC_KUNDE = "Alle Kunden";
 
 	public final static String LBL_SLC_BUCHUNG = "Alle Buchungen";
 
 	public final static String LBL_SLC_STANDORT = "Alle Standorte";
 
+	public final static String LBL_SLC_FAHRZEUG = "Alle Fahrzeuge";
+
+
 	public final static String TAB_KUNDE = "Kunden";
 	public final static String TAB_BUCHUNG = "Buchungen";
 	public final static String TAB_STANDORT = "Standorte";
+
+	public final static String TAB_FAHRZEUG = "Fahrzeuge";
+
 
 	private final static Dimension attCompSize =new Dimension(350,500);
 
@@ -117,16 +135,25 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	private SimpleListComponent slc_standort = null;
 
+	private SimpleListComponent slc_fahrzeug = null;
+
+
 	private AttributeComponent attComp = null;
 
 	private AttributeComponent attCompBuchung = null;
 	private AttributeComponent attCompStandort = null;
+
+	private AttributeComponent attCompFahrzeug = null;
+
 
 	private ButtonComponent btnComp = null;
 
 	private ButtonComponent btnCompB = null;
 
 	private ButtonComponent btnCompS = null;
+
+	private ButtonComponent btnCompF = null;
+
 
 	private  ButtonComponent btnChng = null;
 	private JTabbedPane tabbedPane = new JTabbedPane();
@@ -159,6 +186,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		this.tabbedPane.add( TAB_KUNDE, createKundenTab() );
 		this.tabbedPane.add( TAB_BUCHUNG, createBuchungTab() );
 		this.tabbedPane.add( TAB_STANDORT, createStandortTab() );
+		this.tabbedPane.add(TAB_FAHRZEUG, createFahrzeugTab());
 
 		this.add(tabbedPane);
 		
@@ -240,6 +268,27 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		pnlStandort.add(attCompStandort, BorderLayout.EAST);
 
 		return pnlStandort;
+	}
+
+	private JPanel createFahrzeugTab() {
+		// Basispanel mit BorderLayout
+		JPanel pnlFahrzeug = new JPanel(new BorderLayout());
+		slc_fahrzeug = SimpleListComponent.builder( SLC_FAHRZEUG)
+				.propManager( this.propManager )
+				.title( LBL_SLC_FAHRZEUG )
+				.build();
+		slc_fahrzeug.setPreferredSize( new Dimension(200, 500) );
+
+		slc_fahrzeug.addObserver(this);
+
+		btnCompF = createButtonComponentForLeftList( slc_fahrzeug, BTN_ADD_LL_FAHRZEUG, BTN_REMOVE_LL_FAHRZEUG );
+		pnlFahrzeug.add( btnCompF, BorderLayout.WEST );
+		Fahrzeug initFahrzeug = new Fahrzeug();
+
+		attCompFahrzeug =  createAttributeComponent( ATTCS, LBL_ATTC_FAHRZEUG, createAttributeElementsFor( initFahrzeug ) );
+		pnlFahrzeug.add(attCompFahrzeug, BorderLayout.EAST);
+
+		return pnlFahrzeug;
 	}
 
 	private AttributeComponent createAttributeComponent( String id, String title, AttributeElement[] attElements) {
