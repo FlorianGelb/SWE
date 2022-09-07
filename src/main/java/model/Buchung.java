@@ -5,11 +5,14 @@ import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Buchung implements IDepictable, IPersistable {
+
+    private final static int DFLT_T_OFFSET = 3600;
 
     @Override
     public String getElementID() {
@@ -124,8 +127,11 @@ public class Buchung implements IDepictable, IPersistable {
     }
     public Buchung(String iD, String benennung, String start, String end, String description, Kunde kunde, Fahrzeug fahrzeug, Organisator organisator){
         boolean modifiable = true;
-        LocalDateTime ldtStart = LocalDateTime.now();
-        LocalDateTime ldtEnd = LocalDateTime.now();
+        start = start.replace("T", " ");
+        end = end.replace("T", " ");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime ldtStart = LocalDateTime.parse((start.equals("") ? LocalDateTime.now().format(formatter) : start), formatter);
+        LocalDateTime ldtEnd = LocalDateTime.parse((end.equals("") ?(LocalDateTime.now().plusSeconds(DFLT_T_OFFSET)).format(formatter) : end), formatter);
         String randID = UUID.randomUUID().toString();
         this.attArr[ Attributes.ID.ordinal() ] = Attributes.ID.createAttribute( this, ( iD == null || iD.isEmpty() ? randID : iD ), randID );
         this.attArr[ Attributes.BENENNUNG.ordinal() ] = Attributes.BENENNUNG.createAttribute( this, benennung, "--" );
