@@ -438,6 +438,10 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				return;
 			}
 
+
+
+
+
 		}
 		if( ge.getSource() == this.btnComp ) {
 			ButtonElement be = (ButtonElement)ge.getData();
