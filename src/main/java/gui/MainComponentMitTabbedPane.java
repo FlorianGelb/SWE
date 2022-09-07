@@ -21,10 +21,7 @@ import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.IAppLogger;
 import de.dhbwka.swe.utils.util.IPropertyManager;
-import model.Buchung;
-import model.Fahrzeug;
-import model.Kunde;
-import model.Standort;
+import model.*;
 
 public class MainComponentMitTabbedPane extends ObservableComponent 
 		implements IGUIEventListener, IUpdateEventListener{
@@ -42,6 +39,8 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		SAVE_KUNDEN( "MainComponent.saveAllKunden", null ), // reiner Befehl ohne Payload 
 		ADD_KUNDE( "MainComponent.addKunde", String[].class ),
 		ADD_BUCHUNG("MainComponent.addBuchung", String[].class),
+		ADD_FAHRZEUG("MainComponent.addFahrzeug", String[].class),
+		ADD_RECHNUNG("MainComponent.addRechnung", String[].class),
 		REMOVE_KUNDE( "MainComponent.removeKunde", IDepictable.class );
 
 		public final Class<?> payloadType;
@@ -483,6 +482,40 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				}
 			}
 		}
+
+		if( ge.getSource() == this.btnCompF ) {
+			ButtonElement be = (ButtonElement) ge.getData();
+			if (be.getID().equals(BTN_ADD_LL_FAHRZEUG)) {
+				// build and show an AtributeComponent for input
+				Fahrzeug initFahrzeug = new Fahrzeug();
+				initFahrzeug.getAttributeArray();
+				AttributeComponent attC = createAttributeComponent("input", LBL_ATTC_FAHRZEUG, createAttributeElementsFor(initFahrzeug));
+				attC.setPreferredSize(attCompSize);
+				if (JOptionPane.showConfirmDialog(this, attC, "bitte die Fahrzeugdaten eintragen", JOptionPane.OK_CANCEL_OPTION)
+						== JOptionPane.OK_OPTION) {
+					String[] attVals = attC.getAttributeValuesAsArray();
+					Arrays.asList(attVals).forEach(e -> logger.debug(e));
+					fireGUIEvent(new GUIEvent(this, Commands.ADD_FAHRZEUG, attVals));
+				}
+			}
+		}
+
+		if( ge.getSource() == this.btnCompRM ) {
+			ButtonElement be = (ButtonElement) ge.getData();
+			if (be.getID().equals(BTN_ADD_LL_RM)) {
+				// build and show an AtributeComponent for input
+				Rechnung initRechnung = new Rechnung();
+				initRechnung.getAttributeArray();
+				AttributeComponent attC = createAttributeComponent("input", LBL_ATTC_RM, createAttributeElementsFor(initRechnung));
+				attC.setPreferredSize(attCompSize);
+				if (JOptionPane.showConfirmDialog(this, attC, "bitte die Rechnungdaten eintragen", JOptionPane.OK_CANCEL_OPTION)
+						== JOptionPane.OK_OPTION) {
+					String[] attVals = attC.getAttributeValuesAsArray();
+					Arrays.asList(attVals).forEach(e -> logger.debug(e));
+					fireGUIEvent(new GUIEvent(this, Commands.ADD_RECHNUNG, attVals));
+				}
+			}
+		}
 		/**
 		 * wenn nichts gemacht wird: an den Controller weiterleiten ...
 		 */
@@ -517,6 +550,32 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird
 				System.out.println(lstBuchung.get(0).getAttributeArray()[7]);
 				this.attCompBuchung.setAttributeElementValues( lstBuchung.get(0).getAttributeArray() );
+
+			}
+
+		}
+
+		if(ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_FAHRZEUG){
+			List<Fahrzeug> lstFahrzeuge = (List<Fahrzeug>)ue.getData();
+			this.slc_fahrzeug.setListElements(lstFahrzeuge, true);
+
+			if( lstFahrzeuge.size() > 0 ) {
+				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird
+				System.out.println(Arrays.toString(lstFahrzeuge.get(0).getAttributeArray()));
+				this.attCompFahrzeug.setAttributeElementValues( lstFahrzeuge.get(0).getAttributeArray() );
+
+			}
+
+		}
+
+		if(ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_RECHNUNG){
+			List<Rechnung> lstRechnungen = (List<Rechnung>)ue.getData();
+			this.slc_rm.setListElements(lstRechnungen, true);
+
+			if( lstRechnungen.size() > 0 ) {
+				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird
+				System.out.println(Arrays.toString(lstRechnungen.get(0).getAttributeArray()));
+				this.attCompRM.setAttributeElementValues( lstRechnungen.get(0).getAttributeArray() );
 
 			}
 
