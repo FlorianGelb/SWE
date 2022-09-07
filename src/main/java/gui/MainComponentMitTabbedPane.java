@@ -3,6 +3,7 @@ package gui;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.*;
@@ -251,7 +252,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 						.modificationType( attArr[i].isModifiable() 
 								? AttributeElement.ModificationType.DIRECT 
 								: AttributeElement.ModificationType.NONE )
-						.actionType( AttributeElement.ActionType.NONE)
+						.actionType(AttributeElement.ActionType.NONE)
 						.labelSize( new Dimension(100,40) )
 						.labelAlignment( javax.swing.SwingConstants.RIGHT )
 						.build();
@@ -259,7 +260,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		}
 		return aeArr;
 	}
-	
+
 	public void setElements( List<IDepictable> allElems ) {
 //		this.allElements.clear();
 //		this.allElements.addAll(allElems);
@@ -292,6 +293,15 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				System.out.println(atsKunde[0]);
 				return;
 			}
+
+			if(ge.getData() instanceof Buchung){
+				System.out.println("es ist eine Buchung");
+				Buchung bch = (Buchung) ge.getData();
+				Attribute[] atsBuchung = bch.getAttributeArray();
+				this.attCompBuchung.setAttributeElementValues(atsBuchung);
+				return;
+			}
+
 		}
 		if( ge.getSource() == this.btnComp ) {
 			ButtonElement be = (ButtonElement)ge.getData();
@@ -355,7 +365,11 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				this.dcComp.updatePaths(
 						new String[] {lstKunde.get(0).getAttributeValueOf(Kunde.Attributes.PERSO),
 								lstKunde.get(0).getAttributeValueOf(Kunde.Attributes.FUERERSCHEIN)});
+
 			}
+
+
+
 		}
 
 		if(ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BUCHUNG){
@@ -363,12 +377,14 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 			this.slc_buchung.setListElements(lstBuchung, true);
 
 			if( lstBuchung.size() > 0 ) {
-				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird)
+				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird
+				System.out.println(lstBuchung.get(0).getAttributeArray()[7]);
 				this.attCompBuchung.setAttributeElementValues( lstBuchung.get(0).getAttributeArray() );
 
 			}
 
 		}
+
 	}
 	
 }

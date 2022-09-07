@@ -3,7 +3,6 @@ package model;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,7 +31,11 @@ public class Buchung implements IDepictable, IPersistable {
         BENENNUNG,
         STARTDATUM,
         ENDDATUM,
-        BESCHREIBUNG
+        BESCHREIBUNG,
+        KUNDENID,
+        KENNZEICHEN,
+
+        ORGANISATORID;
     }
 
 
@@ -52,7 +55,12 @@ public class Buchung implements IDepictable, IPersistable {
         BENENNUNG( "Benennung", String.class, true, true, true ),
         STARTDATUM( "Start", LocalDate.class, true, true, true ),
         ENDDATUM( "Ende", LocalDate.class, true, true, true ),
-        BESCHREIBUNG( "Beschreibung", String.class, true, true, true );
+        BESCHREIBUNG( "Beschreibung", String.class, true, true, true ),
+        KUNDE("Kunde", Kunde.class, true, true, true),
+
+        FAHRZEUG("Auto", Fahrzeug.class, true, true, true),
+
+        ORGANISATOR("Organisator", Organisator.class, true, true, true);
 
         private String name;
         private boolean visible;
@@ -107,14 +115,14 @@ public class Buchung implements IDepictable, IPersistable {
     }
 
     private Attribute[] attArr = new Attribute[ Buchung.Attributes.values().length ];
-    public Buchung(String iD, String benennung,  String description){
-        this(iD, benennung, LocalDate.now().toString(), LocalDate.now().toString(), description);
+    public Buchung(String iD, String benennung,  String description, Kunde kunde, Fahrzeug fahrzeug, Organisator organisator){
+        this(iD, benennung, LocalDate.now().toString(), LocalDate.now().toString(), description, kunde, fahrzeug, organisator);
     }
 
     public Buchung() {
-        this( "", "", "", "", "");
+        this( "", "", "", "", "", null, null, null);
     }
-    public Buchung(String iD, String benennung, String start, String end, String description){
+    public Buchung(String iD, String benennung, String start, String end, String description, Kunde kunde, Fahrzeug fahrzeug, Organisator organisator){
         boolean modifiable = true;
         LocalDateTime ldtStart = LocalDateTime.now();
         LocalDateTime ldtEnd = LocalDateTime.now();
@@ -123,7 +131,10 @@ public class Buchung implements IDepictable, IPersistable {
         this.attArr[ Attributes.BENENNUNG.ordinal() ] = Attributes.BENENNUNG.createAttribute( this, benennung, "--" );
         this.attArr[ Attributes.STARTDATUM.ordinal() ] = Attributes.STARTDATUM.createAttribute( this, ldtStart, "--" );
         this.attArr[ Attributes.ENDDATUM.ordinal() ] = Attributes.ENDDATUM.createAttribute(this, ldtEnd, Boolean.TRUE );
-        this.attArr[ Attributes.BESCHREIBUNG.ordinal() ] = Attributes.BESCHREIBUNG.createAttribute( this, description, "" );
+        this.attArr[ Attributes.BESCHREIBUNG.ordinal() ] = Attributes.BESCHREIBUNG.createAttribute( this, description, "--" );
+        this.attArr[Attributes.KUNDE.ordinal()] = Attributes.KUNDE.createAttribute(this, kunde, null);
+        this.attArr[Attributes.FAHRZEUG.ordinal()] = Attributes.FAHRZEUG.createAttribute(this, fahrzeug, null);
+        this.attArr[Attributes.ORGANISATOR.ordinal()] = Attributes.ORGANISATOR.createAttribute(this, organisator, null);
     }
 
     public String toString() {

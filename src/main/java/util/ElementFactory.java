@@ -9,9 +9,10 @@ import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import model.Buchung;
+import model.Fahrzeug;
 import model.Kunde;
+import model.Organisator;
 
-import javax.management.MBeanServerConnection;
 
 public class ElementFactory {
 
@@ -63,14 +64,41 @@ public class ElementFactory {
 			throw new IllegalArgumentException("Klasse muss angegeben werden ( Klasse ist null )!");
 		}
 
+
+		else if (c == Organisator.class){
+			String ID = csvData[Organisator.CSVPositions.ID.ordinal()];
+			String Vorname = csvData[Organisator.CSVPositions.VORNAME.ordinal()];
+			String Nachname = csvData[Organisator.CSVPositions.NACHNAME.ordinal()];
+
+			persistableElement = new Organisator(ID, Vorname, Nachname);
+		}
+
+		else if(c == Fahrzeug.class){
+			String kennzeichen = csvData[Fahrzeug.CSVPositions.KENNZEICHEN.ordinal()];
+			String marke = csvData[Fahrzeug.CSVPositions.MARKE.ordinal()];
+			String farbe = csvData[Fahrzeug.CSVPositions.FARBE.ordinal()];
+			String kraftstoff = csvData[Fahrzeug.CSVPositions.KRAFTSTOFF.ordinal()];
+			String getriebe =  csvData[Fahrzeug.CSVPositions.GETRIEBE.ordinal()];
+
+			persistableElement = new Fahrzeug(kennzeichen, marke, farbe, kraftstoff, getriebe);
+		}
+
 		else if(c == Buchung.class){
 			String id = csvData[Buchung.CSVPositions.ID.ordinal()];
-			String benennung = csvData[Buchung.CSVPositions.ID.ordinal()];
-			String start = csvData[Buchung.CSVPositions.ID.ordinal()];
-			String ende = csvData[Buchung.CSVPositions.ID.ordinal()];
-			String beschreibung = csvData[Buchung.CSVPositions.ID.ordinal()];
+			String benennung = csvData[Buchung.CSVPositions.BENENNUNG.ordinal()];
+			String start = csvData[Buchung.CSVPositions.STARTDATUM.ordinal()];
+			String ende = csvData[Buchung.CSVPositions.ENDDATUM.ordinal()];
+			String beschreibung = csvData[Buchung.CSVPositions.BESCHREIBUNG.ordinal()];
+			String kundenid = csvData[Buchung.CSVPositions.KUNDENID.ordinal()];
+			String kennzeichen = csvData[Buchung.CSVPositions.KENNZEICHEN.ordinal()];
+			String organisatorid = csvData[Buchung.CSVPositions.ORGANISATORID.ordinal()];
+			Kunde kunde = (Kunde)entityManager.find(Kunde.class, kundenid);
+			Fahrzeug fahrzeug = (Fahrzeug)entityManager.find(Fahrzeug.class, kennzeichen);
+			Organisator organisator = (Organisator)entityManager.find(Organisator.class, organisatorid);
+			System.out.println(organisatorid);
+			System.out.println(organisator);
 
-			persistableElement = new Buchung(id, benennung, start, ende, beschreibung);
+			persistableElement = new Buchung(id, benennung, start, ende, beschreibung, kunde, fahrzeug, organisator);
 		}
 
 		else if( c == Kunde.class ) {
