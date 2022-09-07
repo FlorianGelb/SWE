@@ -85,11 +85,16 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	private final static String BTN_ADD_LL_FAHRZEUG = "AddElement2LeftListB";
 
+	private final static String BTN_ADD_LL_RM = "AddElement2LeftListB";
+
+
 	private final static String BTN_REMOVE_LL_STANDORT = "RemoveElementFromLeftListB";
 
 	private final static String BTN_REMOVE_LL_FAHRZEUG = "RemoveElementFromLeftListB";
 
-	private final static String BTN_REMOVE_LL_STANDORT = "RemoveElementFromLeftListB";
+	private final static String BTN_REMOVE_LL_RM = "RemoveElementFromLeftListB";
+
+
 	private final static String BTN_CHANGE_ATR = "ChangeAttrCustomer";
 	
 	public final static String SLC = "SimpleListComponent-1";
@@ -98,6 +103,9 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	public final static String SLC_STANDORT = "SimpleListComponent-2";
 
 	public final static String SLC_FAHRZEUG = "SimpleListComponent-2";
+
+	public final static String SLC_RM= "SimpleListComponent-2";
+
 
 	public final static String ATTC = "AttributeComponent-1";
 	public final static String ATTCB = "AttributeComponent-1";
@@ -111,6 +119,9 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	public final static String LBL_ATTC_FAHRZEUG = "Attribute des Standortes";
 
+	public final static String LBL_ATTC_RM = "Attribute der Rechnungen und Mahnungen";
+
+
 
 	public final static String LBL_SLC_KUNDE = "Alle Kunden";
 
@@ -120,6 +131,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	public final static String LBL_SLC_FAHRZEUG = "Alle Fahrzeuge";
 
+	public final static String LBL_SLC_RM = "Alle Rechnungen und Mahnungen";
 
 
 	public final static String TAB_KUNDE = "Kunden";
@@ -127,6 +139,9 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	public final static String TAB_STANDORT = "Standorte";
 
 	public final static String TAB_FAHRZEUG = "Fahrzeuge";
+
+	public final static String TAB_RM = "Rechnungen/Mahnungen";
+
 
 
 	private final static Dimension attCompSize =new Dimension(350,500);
@@ -139,6 +154,9 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	private SimpleListComponent slc_fahrzeug = null;
 
+	private SimpleListComponent slc_rm = null;
+
+
 
 	private AttributeComponent attComp = null;
 
@@ -147,12 +165,17 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	private AttributeComponent attCompFahrzeug = null;
 
+	private AttributeComponent  attCompRM = null;
+
 
 	private ButtonComponent btnComp = null;
 
 	private ButtonComponent btnCompB = null;
 
 	private ButtonComponent btnCompS = null;
+
+	private ButtonComponent btnCompRM = null;
+
 
 	private ButtonComponent btnCompF = null;
 
@@ -189,6 +212,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		this.tabbedPane.add( TAB_BUCHUNG, createBuchungTab() );
 		this.tabbedPane.add( TAB_STANDORT, createStandortTab() );
 		this.tabbedPane.add(TAB_FAHRZEUG, createFahrzeugTab());
+		this.tabbedPane.add(TAB_RM, createRechnungUndMahnungTab());
 
 		this.add(tabbedPane);
 		
@@ -291,6 +315,27 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		pnlFahrzeug.add(attCompFahrzeug, BorderLayout.EAST);
 
 		return pnlFahrzeug;
+	}
+
+	private JPanel createRechnungUndMahnungTab() {
+		// Basispanel mit BorderLayout
+		JPanel pnlRM = new JPanel(new BorderLayout());
+		slc_rm = SimpleListComponent.builder( SLC_RM)
+				.propManager( this.propManager )
+				.title( LBL_SLC_RM )
+				.build();
+		slc_rm.setPreferredSize( new Dimension(200, 500) );
+
+		slc_rm.addObserver(this);
+
+		btnCompRM = createButtonComponentForLeftList( slc_rm, BTN_ADD_LL_RM, BTN_REMOVE_LL_RM );
+		pnlRM.add( btnCompRM, BorderLayout.WEST );
+		Fahrzeug initFahrzeug = new Fahrzeug();
+
+		attCompRM =  createAttributeComponent( ATTCS, LBL_ATTC_RM, createAttributeElementsFor( initFahrzeug ) );
+		pnlRM.add(attCompRM, BorderLayout.EAST);
+
+		return pnlRM;
 	}
 
 	private AttributeComponent createAttributeComponent( String id, String title, AttributeElement[] attElements) {

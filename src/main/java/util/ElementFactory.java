@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,10 +9,7 @@ import de.dhbwka.swe.utils.model.Gruppe;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
-import model.Buchung;
-import model.Fahrzeug;
-import model.Kunde;
-import model.Organisator;
+import model.*;
 
 
 public class ElementFactory {
@@ -81,6 +79,15 @@ public class ElementFactory {
 			String getriebe =  csvData[Fahrzeug.CSVPositions.GETRIEBE.ordinal()];
 
 			persistableElement = new Fahrzeug(kennzeichen, marke, farbe, kraftstoff, getriebe);
+		}
+
+		else if(c == Rechnung.class){
+			String rechnungsnummer = csvData[Rechnung.CSVPositions.RECHNUNGSNUMMER.ordinal()];
+			float rechnungsbetrag = Float.parseFloat(csvData[Rechnung.CSVPositions.RECHNUNGSBETRAG.ordinal()]);
+			String frist = csvData[Rechnung.CSVPositions.FRIST.ordinal()];
+			String anmerkung = csvData[Rechnung.CSVPositions.ANMERKUNG.ordinal()];
+
+			persistableElement = new Rechnung(rechnungsnummer, rechnungsbetrag, frist, anmerkung);
 		}
 
 		else if(c == Buchung.class){
