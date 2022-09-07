@@ -124,7 +124,7 @@ public class Fahrzeug implements IDepictable, IPersistable {
 		return names.toArray( new String[ names.size() ] );
 	}
 
-	private Attribute[] attArr = new Attribute[ Buchung.Attributes.values().length ];
+	private Attribute[] attArr = new Attribute[ Fahrzeug.Attributes.values().length ];
 
 	public Fahrzeug() {
 		this( "", "", "", "", "");
