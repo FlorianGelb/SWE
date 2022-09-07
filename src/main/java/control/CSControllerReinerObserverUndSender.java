@@ -1,6 +1,8 @@
 package control;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.net.URL;
 
@@ -12,7 +14,9 @@ import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
 import de.dhbwka.swe.utils.gui.ButtonElement;
+import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
+import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.CSVReader;
 import de.dhbwka.swe.utils.util.CSVWriter;
@@ -233,7 +237,28 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				Fahrzeug fahrzeug = (Fahrzeug)entityManager.find(Fahrzeug.class, buchungAtts[Buchung.CSVPositions.KENNZEICHEN.ordinal()]);
 				Organisator organisator = (Organisator)entityManager.find(Organisator.class, buchungAtts[Buchung.CSVPositions.ORGANISATORID.ordinal()]);
 
-				if(kunde != null && fahrzeug != null && organisator != null) {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				String startS = buchungAtts[Buchung.CSVPositions.STARTDATUM.ordinal()].replace("T", " ");
+				String endS = buchungAtts[Buchung.CSVPositions.ENDDATUM.ordinal()].replace("T", " ");
+				LocalDateTime startNew = LocalDateTime.parse(startS, formatter);
+				LocalDateTime endNew = LocalDateTime.parse(endS, formatter);
+
+
+				List<IPersistable> buchungen = entityManager.findAll(Buchung.class);
+				Boolean notCollision = endNew.isAfter(startNew);
+				for(IPersistable b : buchungen){
+					Attribute[] attrArr = ((Buchung)b).getAttributeArray();
+					LocalDateTime start = (LocalDateTime)attrArr[Buchung.CSVPositions.STARTDATUM.ordinal()].getValue();
+					LocalDateTime end = (LocalDateTime)attrArr[Buchung.CSVPositions.ENDDATUM.ordinal()].getValue();
+					String kennzeichen = (String)((Fahrzeug)attrArr[Buchung.CSVPositions.KENNZEICHEN.ordinal()].getValue()).getAttributeArray()[Fahrzeug.CSVPositions.KENNZEICHEN.ordinal()].getValue();
+
+					notCollision = notCollision && !(((startNew.isAfter(start) && startNew.isBefore(end)) || (endNew.isAfter(start) && endNew.isBefore(end))) && kennzeichen.equals(buchungAtts[Buchung.CSVPositions.KENNZEICHEN.ordinal()]));
+
+					System.out.println(0);
+				}
+
+
+				if(kunde != null && fahrzeug != null && organisator != null && notCollision) {
 					elementFactory.createElement(Buchung.class, buchungAtts);
 					buchungAtts[Buchung.CSVPositions.KUNDENID.ordinal()] = kunde.toString();
 					buchungAtts[Buchung.CSVPositions.KENNZEICHEN.ordinal()] = fahrzeug.toString();
@@ -250,6 +275,10 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 					}
 					else if(organisator == null){
 						JOptionPane.showMessageDialog(null, "Ungültige OrganisatorID: " +  buchungAtts[Buchung.CSVPositions.ORGANISATORID.ordinal()], "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
+
+					else if(!notCollision){
+						JOptionPane.showMessageDialog(null, "Das Fahrzeug ist in diesem Zeitraum schon gebucht " +  buchungAtts[Buchung.CSVPositions.KENNZEICHEN.ordinal()], "ERROR", JOptionPane.ERROR_MESSAGE);
 					}
 
 				}

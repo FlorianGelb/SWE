@@ -99,11 +99,11 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	public final static String SLC = "SimpleListComponent-1";
 
 	public final static String SLC_BUCHUNG = "SimpleListComponent-2";
-	public final static String SLC_STANDORT = "SimpleListComponent-2";
+	public final static String SLC_STANDORT = "SimpleListComponent-3";
 
-	public final static String SLC_FAHRZEUG = "SimpleListComponent-2";
+	public final static String SLC_FAHRZEUG = "SimpleListComponent-4";
 
-	public final static String SLC_RM= "SimpleListComponent-2";
+	public final static String SLC_RM= "SimpleListComponent-5";
 
 
 	public final static String ATTC = "AttributeComponent-1";
@@ -438,9 +438,21 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				return;
 			}
 
+			if(ge.getData() instanceof Fahrzeug){
+				System.out.println("es ist eine Fahrzeug");
+				Fahrzeug fahrzeug = (Fahrzeug) ge.getData();
+				Attribute[] atsFahrzeug = fahrzeug.getAttributeArray();
+				this.attCompFahrzeug.setAttributeElementValues(atsFahrzeug);
+				return;
+			}
 
-
-
+			if(ge.getData() instanceof Rechnung){
+				System.out.println("es ist eine Rechnung");
+				Rechnung rechnung = (Rechnung) ge.getData();
+				Attribute[] atsRechnung = rechnung.getAttributeArray();
+				this.attCompRM.setAttributeElementValues(atsRechnung);
+				return;
+			}
 
 		}
 		if( ge.getSource() == this.btnComp ) {
