@@ -40,7 +40,11 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		 */
 		SET_KUNDEN( "Controller.setKunden", List.class ),
 		SET_BUCHUNG("Controller.setBuchung", List.class),
-		SET_BUCHUNG_KUNDEN("Controller.setBuchungKunden", List.class);
+		SET_BUCHUNG_KUNDEN("Controller.setBuchungKunden", List.class),
+
+		SET_FAHRZEUG("Controller.setFahrzeug",List .class),
+		SET_RECHNUNG("Controller.setFahrzeug",List .class);
+
 
 		public final Class<?> payloadType;
 		public final String cmdText;
@@ -105,6 +109,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			loadCSVData();
 			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
 			fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNG, entityManager.findAll(Buchung.class)));
+			fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUG, entityManager.findAll(Fahrzeug.class)));
+			fireUpdateEvent(new UpdateEvent(this, Commands.SET_RECHNUNG, entityManager.findAll(Rechnung.class)));
 			System.out.println(0);
 			
 		} catch (IOException e) {
@@ -126,6 +132,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		pathKeysClass.put(1, Organisator.class);
 		pathKeysClass.put(2, Fahrzeug.class);
 		pathKeysClass.put(3, Buchung.class);
+		pathKeysClass.put(4, Rechnung.class);
 
 
 		Map<Integer, String> paths = new TreeMap<>();
@@ -133,6 +140,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		paths.put(1, "/CSVFiles/Organisator.csv");
 		paths.put(2, "/CSVFiles/Fahrzeug.csv");
 		paths.put(3, "/CSVFiles/Buchungen.csv");
+		paths.put(4, "/CSVFiles/Rechnungen.csv");
 
 
 		for(int key: paths.keySet()){
@@ -184,6 +192,32 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				// element wird erzeugt und in ElementManager gespeichert
 				elementFactory.createElement(Kunde.class, kundenAtts);
 				fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_FAHRZEUG ) {
+			logger.debug( ge.getData().toString() );
+			String[] fahrzeugAtts = (String[])ge.getData();
+			try {
+				// element wird erzeugt und in ElementManager gespeichert
+				elementFactory.createElement(Fahrzeug.class, fahrzeugAtts);
+				fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUG, entityManager.findAll( Fahrzeug.class) ) );
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_RECHNUNG ) {
+			logger.debug( ge.getData().toString() );
+			String[] rechnungAtts = (String[])ge.getData();
+			try {
+				// element wird erzeugt und in ElementManager gespeichert
+				elementFactory.createElement(Rechnung.class, rechnungAtts);
+				fireUpdateEvent( new UpdateEvent(this, Commands.SET_RECHNUNG, entityManager.findAll( Rechnung.class) ) );
 
 			} catch (Exception e) {
 				e.printStackTrace();
