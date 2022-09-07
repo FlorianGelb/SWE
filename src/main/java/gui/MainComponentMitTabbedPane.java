@@ -89,6 +89,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	private final static String BTN_REMOVE_LL_FAHRZEUG = "RemoveElementFromLeftListB";
 
+	private final static String BTN_REMOVE_LL_STANDORT = "RemoveElementFromLeftListB";
 	private final static String BTN_CHANGE_ATR = "ChangeAttrCustomer";
 	
 	public final static String SLC = "SimpleListComponent-1";
@@ -118,6 +119,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 	public final static String LBL_SLC_STANDORT = "Alle Standorte";
 
 	public final static String LBL_SLC_FAHRZEUG = "Alle Fahrzeuge";
+
 
 
 	public final static String TAB_KUNDE = "Kunden";
