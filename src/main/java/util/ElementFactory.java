@@ -62,6 +62,12 @@ public class ElementFactory {
 			throw new IllegalArgumentException("Klasse muss angegeben werden ( Klasse ist null )!");
 		}
 
+		else if (c == Standort.class){
+			String ID = csvData[Standort.CSVPositions.ID.ordinal()];
+			String Name = csvData[Standort.CSVPositions.NAME.ordinal()];
+			int nPlaetze = Integer.parseInt(csvData[Standort.CSVPositions.ANZAHL_PLAETZE.ordinal()]);
+			persistableElement = new Standort(ID, Name, nPlaetze);
+		}
 
 		else if (c == Organisator.class){
 			String ID = csvData[Organisator.CSVPositions.ID.ordinal()];

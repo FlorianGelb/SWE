@@ -1,11 +1,15 @@
 package app;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import control.CSControllerReinerObserverUndSender;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.util.IOUtilities;
+import de.dhbwka.swe.utils.util.PropertyManager;
 import gui.MainComponent;
 import gui.MainComponentMitTabbedPane;
 import model.Kunde;
@@ -14,8 +18,16 @@ import model.Standort;
 public class CarsharingApp {
 
 	private final static boolean startWithObserver = true;
+
+	private static PropertyManager propertyManager;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+
+		propertyManager= new PropertyManager(args[0], CarsharingApp.class, "");
+
+
+
+
 		new CarsharingApp( startWithObserver );
 	}
 	
@@ -35,7 +47,7 @@ public class CarsharingApp {
 	}
 
 	private void initWithObserver() {
-		MainComponentMitTabbedPane mainComp = new MainComponentMitTabbedPane(null);
+		MainComponentMitTabbedPane mainComp = new MainComponentMitTabbedPane(propertyManager);
 
 		CSControllerReinerObserverUndSender controller = new CSControllerReinerObserverUndSender();
 		controller.addObserver( mainComp );

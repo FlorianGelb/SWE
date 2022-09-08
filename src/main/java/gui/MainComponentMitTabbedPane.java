@@ -348,9 +348,11 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		ButtonElement[] beArr = new ButtonElement[] {
 			ButtonElement.builder( ID1 )
 			.buttonText( "Anlegen" )
+					.propManager(this.propManager)
 			.build(),
 			ButtonElement.builder( ID2 )
 			.buttonText( "Löschen" )
+					.propManager(this.propManager)
 			.build()
 		};
 		
@@ -365,6 +367,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		ButtonElement[] beArr = new ButtonElement[] {
 				ButtonElement.builder(BTN_CHANGE_ATR)
 						.buttonText( "Ändern" )
+						.propManager(this.propManager)
 						.build()};
 
 		return ButtonComponent.builder(BTC).buttonElements(beArr)
@@ -391,6 +394,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 						.actionType(AttributeElement.ActionType.NONE)
 						.labelSize( new Dimension(100,40) )
 						.labelAlignment( javax.swing.SwingConstants.RIGHT )
+						.propManager(this.propManager)
 						.build();
 			}
 		}
@@ -452,6 +456,12 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				Attribute[] atsRechnung = rechnung.getAttributeArray();
 				this.attCompRM.setAttributeElementValues(atsRechnung);
 				return;
+			}
+
+			if(ge.getData() instanceof Standort){
+				Standort standort = (Standort) ge.getData();
+				Attribute[] atsStandort = standort.getAttributeArray();
+				this.attCompStandort.setAttributeElementValues(atsStandort);
 			}
 
 		}
@@ -595,6 +605,19 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 			}
 
+		}
+
+
+		if(ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_STANDORT){
+			List<Standort> lstStandort = (List<Standort>)ue.getData();
+			this.slc_standort.setListElements(lstStandort, true);
+
+			if( lstStandort.size() > 0 ) {
+				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird
+				System.out.println(Arrays.toString(lstStandort.get(0).getAttributeArray()));
+				this.attCompStandort.setAttributeElementValues( lstStandort.get(0).getAttributeArray() );
+
+			}
 		}
 
 	}

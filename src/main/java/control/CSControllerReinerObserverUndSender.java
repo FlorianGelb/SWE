@@ -28,6 +28,7 @@ import gui.MainComponentMitTabbedPane;
 import model.*;
 import util.ElementFactory;
 
+import javax.naming.ldap.Control;
 import javax.swing.*;
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
@@ -46,7 +47,9 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		SET_BUCHUNG("Controller.setBuchung", List.class),
 		SET_BUCHUNG_KUNDEN("Controller.setBuchungKunden", List.class),
 
-		SET_FAHRZEUG("Controller.setFahrzeug",List .class),
+		SET_FAHRZEUG("Controller.setFahrzeug",List.class),
+
+		SET_STANDORT("Controller.setStandrot", List.class),
 		SET_RECHNUNG("Controller.setFahrzeug",List .class);
 
 
@@ -116,6 +119,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNG, entityManager.findAll(Buchung.class)));
 			fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUG, entityManager.findAll(Fahrzeug.class)));
 			fireUpdateEvent(new UpdateEvent(this, Commands.SET_RECHNUNG, entityManager.findAll(Rechnung.class)));
+			fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORT, entityManager.findAll(Standort.class)));
 			System.out.println(0);
 			
 		} catch (IOException e) {
@@ -157,6 +161,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		pathKeysClass.put(2, Fahrzeug.class);
 		pathKeysClass.put(3, Buchung.class);
 		pathKeysClass.put(4, Rechnung.class);
+		pathKeysClass.put(5, Standort.class);
 
 
 		Map<Integer, String> paths = new TreeMap<>();
@@ -165,6 +170,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		paths.put(2, "/CSVFiles/Fahrzeug.csv");
 		paths.put(3, "/CSVFiles/Buchungen.csv");
 		paths.put(4, "/CSVFiles/Rechnungen.csv");
+		paths.put(5, "/CSVFiles/Standort.csv");
 
 
 		for(int key: paths.keySet()){
