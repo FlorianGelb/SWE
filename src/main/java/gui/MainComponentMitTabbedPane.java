@@ -458,6 +458,12 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				return;
 			}
 
+			if(ge.getData() instanceof Standort){
+				Standort standort = (Standort) ge.getData();
+				Attribute[] atsStandort = standort.getAttributeArray();
+				this.attCompStandort.setAttributeElementValues(atsStandort);
+			}
+
 		}
 		if( ge.getSource() == this.btnComp ) {
 			ButtonElement be = (ButtonElement)ge.getData();
@@ -599,6 +605,19 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 			}
 
+		}
+
+
+		if(ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_STANDORT){
+			List<Standort> lstStandort = (List<Standort>)ue.getData();
+			this.slc_standort.setListElements(lstStandort, true);
+
+			if( lstStandort.size() > 0 ) {
+				// wenn mind. 1 Element -> in AttComp darstellen (da sonst auto-generierte ID verwendet wird
+				System.out.println(Arrays.toString(lstStandort.get(0).getAttributeArray()));
+				this.attCompStandort.setAttributeElementValues( lstStandort.get(0).getAttributeArray() );
+
+			}
 		}
 
 	}

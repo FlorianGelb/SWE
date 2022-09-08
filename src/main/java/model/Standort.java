@@ -57,7 +57,7 @@ public class Standort implements IDepictable, IPersistable {
 	private Attribute[] attArr = new Attribute[ Standort.Attributes.values().length ];
 
 
-	/*public Standort(String id, String name, int anzahlPlaetze) {
+	/*public Standort.csv(String id, String name, int anzahlPlaetze) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -70,8 +70,6 @@ public class Standort implements IDepictable, IPersistable {
 
 	public Standort(String iD, String name, int anzahlPlaetze) {
 		boolean modifiable = true;
-		LocalDateTime ldtStart = LocalDateTime.now();
-		LocalDateTime ldtEnd = LocalDateTime.now();
 		String randID = UUID.randomUUID().toString();
 		this.attArr[ Standort.Attributes.ID.ordinal() ] = Standort.Attributes.ID.createAttribute( this, ( iD == null || iD.isEmpty() ? randID : iD ), randID );
 		this.attArr[ Standort.Attributes.NAME.ordinal() ] = Standort.Attributes.NAME.createAttribute( this, name, "--" );

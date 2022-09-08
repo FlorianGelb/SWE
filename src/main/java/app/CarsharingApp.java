@@ -23,11 +23,6 @@ public class CarsharingApp {
 	
 	public static void main(String[] args) throws Exception {
 
-		//String configFilePath = CarsharingApp.class.getClass().getResource(args[0]).getPath();
-
-
-		HashMap<String, String> pmn = new HashMap<>();
-		pmn.put("a", "a");
 		propertyManager= new PropertyManager(args[0], CarsharingApp.class, "");
 
 
