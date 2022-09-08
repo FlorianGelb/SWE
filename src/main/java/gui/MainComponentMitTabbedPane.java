@@ -348,9 +348,11 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		ButtonElement[] beArr = new ButtonElement[] {
 			ButtonElement.builder( ID1 )
 			.buttonText( "Anlegen" )
+					.propManager(this.propManager)
 			.build(),
 			ButtonElement.builder( ID2 )
 			.buttonText( "Löschen" )
+					.propManager(this.propManager)
 			.build()
 		};
 		
@@ -365,6 +367,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		ButtonElement[] beArr = new ButtonElement[] {
 				ButtonElement.builder(BTN_CHANGE_ATR)
 						.buttonText( "Ändern" )
+						.propManager(this.propManager)
 						.build()};
 
 		return ButtonComponent.builder(BTC).buttonElements(beArr)
@@ -391,6 +394,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 						.actionType(AttributeElement.ActionType.NONE)
 						.labelSize( new Dimension(100,40) )
 						.labelAlignment( javax.swing.SwingConstants.RIGHT )
+						.propManager(this.propManager)
 						.build();
 			}
 		}
