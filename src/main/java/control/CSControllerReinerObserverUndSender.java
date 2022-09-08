@@ -265,6 +265,19 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			}
 		}
 
+		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_STANDORT ) {
+			logger.debug( ge.getData().toString() );
+			String[] standAtts = (String[])ge.getData();
+			try {
+				// element wird erzeugt und in ElementManager gespeichert
+				elementFactory.createElement(Standort.class, standAtts);
+				fireUpdateEvent( new UpdateEvent(this, Commands.SET_STANDORT, entityManager.findAll( Standort.class) ) );
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_BUCHUNG ) {
 			logger.debug( ge.getData().toString() );
 			String[] buchungAtts = (String[])ge.getData();

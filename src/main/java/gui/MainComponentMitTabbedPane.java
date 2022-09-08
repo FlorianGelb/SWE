@@ -41,6 +41,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 		ADD_BUCHUNG("MainComponent.addBuchung", String[].class),
 		ADD_FAHRZEUG("MainComponent.addFahrzeug", String[].class),
 		ADD_RECHNUNG("MainComponent.addRechnung", String[].class),
+		ADD_STANDORT("MainComponent.addStandort", String[].class),
 		REMOVE_KUNDE( "MainComponent.removeKunde", IDepictable.class );
 
 		public final Class<?> payloadType;
@@ -116,7 +117,7 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 
 	public final static String LBL_ATTC_STANDORT = "Attribute des Standortes";
 
-	public final static String LBL_ATTC_FAHRZEUG = "Attribute des Standortes";
+	public final static String LBL_ATTC_FAHRZEUG = "Attribute des Fahrzeugs";
 
 	public final static String LBL_ATTC_RM = "Attribute der Rechnungen und Mahnungen";
 
@@ -542,7 +543,23 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 			}
 		}
 
-		if (ge.getSource() == this.btnComp)
+		if (ge.getSource() == this.btnCompS){
+			ButtonElement be = (ButtonElement) ge.getData();
+			if (be.getID().equals(BTN_ADD_LL_STANDORT)) {
+				// build and show an AtributeComponent for input
+				Standort initStandort = new Standort();
+				initStandort.getAttributeArray();
+				AttributeComponent attC = createAttributeComponent("input", LBL_ATTC_STANDORT, createAttributeElementsFor(initStandort));
+				attC.setPreferredSize(attCompSize);
+				if (JOptionPane.showConfirmDialog(this, attC, "bitte die Standortdaten eintragen", JOptionPane.OK_CANCEL_OPTION)
+						== JOptionPane.OK_OPTION) {
+					String[] attVals = attC.getAttributeValuesAsArray();
+					Arrays.asList(attVals).forEach(e -> logger.debug(e));
+					fireGUIEvent(new GUIEvent(this, Commands.ADD_STANDORT, attVals));
+				}
+			}
+
+		}
 
 		/**
 		 * wenn nichts gemacht wird: an den Controller weiterleiten ...
