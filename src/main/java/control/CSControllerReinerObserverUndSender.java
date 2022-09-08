@@ -74,6 +74,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			return this.payloadType;
 		}
 	}
+
+	CSVWriter csvWriter = null;
 	
 	/**
 	 * alle Listener, die auf Updates warten
@@ -95,8 +97,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	 * zum Lesen/Schreiben wiederverwendet werden (csvReader = new CSVReader() ...)
 	 */
 	CSVReader csvReader = null;
-	CSVWriter csvWriter = null;
-	
+
 	IAppLogger logger = AppLogger.getInstance();
 
 	public CSControllerReinerObserverUndSender() {
@@ -120,6 +121,25 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void writeCSVData() throws IOException {
+		String header = "ID;BENENNUNG;STARTDATUM;ENDDATUM;BESCHREIBUNG;KUNDENID;KENNZEICHEN;ORGANISATORID;";
+		String[] headerArg = header.split(";");
+		List<IPersistable> buchungen = entityManager.findAll(Buchung.class);
+		List<Object[]> data = new ArrayList<>();
+		buchungen.forEach(buchung -> {
+			Attribute[] attributeArray = ((Buchung) buchung).getAttributeArray();
+			Object[] attributes = new Object[attributeArray.length];
+			for (int i = 0; i < attributeArray.length; i++) {
+				attributes[i] = attributeArray[i].getValue().toString();
+				System.out.println(0);
+			}
+			data.add((Object[]) attributes);
+		});
+
+		csvWriter = new CSVWriter(Objects.requireNonNull(this.getClass().getResource("/CSVFiles/Buchungen.csv")).getPath(), false);
+		csvWriter.writeDataToFile(data, headerArg);
 	}
 
 	private void loadCSVData() throws IOException {
@@ -236,6 +256,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				Kunde kunde = (Kunde)entityManager.find(Kunde.class, buchungAtts[Buchung.CSVPositions.KUNDENID.ordinal()]);
 				Fahrzeug fahrzeug = (Fahrzeug)entityManager.find(Fahrzeug.class, buchungAtts[Buchung.CSVPositions.KENNZEICHEN.ordinal()]);
 				Organisator organisator = (Organisator)entityManager.find(Organisator.class, buchungAtts[Buchung.CSVPositions.ORGANISATORID.ordinal()]);
+				// Rechnung
 
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 				String startS = buchungAtts[Buchung.CSVPositions.STARTDATUM.ordinal()].replace("T", " ");
@@ -265,6 +286,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 					buchungAtts[Buchung.CSVPositions.ORGANISATORID.ordinal()] = organisator.toString();
 
 					fireUpdateEvent( new UpdateEvent(this, Commands.SET_BUCHUNG, entityManager.findAll( Buchung.class) ) );
+					writeCSVData();
 				}
 				else{
 					if(kunde == null){
