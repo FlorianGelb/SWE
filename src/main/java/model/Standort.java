@@ -10,9 +10,6 @@ import java.util.UUID;
 
 public class Standort implements IDepictable, IPersistable {
 
-	private String id = "not set";
-	private String name = "not set";
-	private int anzahlPlaetze = 0;
 
 	@Override
 	public Object getPrimaryKey() {
@@ -84,31 +81,15 @@ public class Standort implements IDepictable, IPersistable {
 
 	@Override
 	public String getElementID() {
-		return id;
+		return this.attArr[ Standort.Attributes.ID.ordinal() ].getValue().toString();
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public int getAnzahlPlaetze() {
-		return anzahlPlaetze;
-	}
-
-	public void setAnzahlPlaetze(int anzahlPlaetze) {
-		this.anzahlPlaetze = anzahlPlaetze;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@Override
 	public String toString() {
-		return "(" + this.id + ")  " + this.name + "  #Plaetze: " + this.anzahlPlaetze;
+		return this.attArr[Attributes.ID.ordinal()].getValue() + ", "
+				+ this.attArr[Attributes.NAME.ordinal()].getValue() + ", "
+				+ this.attArr[Attributes.ANZAHL_PLAETZE.ordinal()].getValue();
 	}
+
 }

@@ -137,6 +137,17 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			Object[] attributes = new Object[attributeArray.length];
 			for (int i = 0; i < attributeArray.length; i++) {
 				attributes[i] = attributeArray[i].getValue().toString();
+				if(i == Buchung.Attributes.KUNDE.ordinal()){
+					attributes[i] = ((Kunde) attributeArray[i].getValue()).getAttributeArray()[Kunde.Attributes.ID.ordinal()].getValue().toString();
+				}
+				else if (i == Buchung.Attributes.ORGANISATOR.ordinal()){
+					attributes[i] = ((Organisator)attributeArray[i].getValue()).getAttributeArray()[Organisator.Attributes.ID.ordinal()].getValue();
+				}
+				else if (i == Buchung.Attributes.FAHRZEUG.ordinal()){
+					attributes[i] = ((Fahrzeug)attributeArray[i].getValue()).getAttributeArray()[Fahrzeug.Attributes.KENNZEICHEN.ordinal()].getValue();
+				}
+
+
 				System.out.println(0);
 			}
 			data.add((Object[]) attributes);
@@ -177,7 +188,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			String path = paths.get(key);
 			Class clazz = pathKeysClass.get(key);
 			String filePath = this.getClass().getResource(path).getPath();  // ohne "file:" am Anfang
-			CSVReader csvReader = new CSVReader( filePath );
+		CSVReader csvReader = new CSVReader( filePath );
 			List<String[]> csvData = csvReader.readData();
 			csvData.forEach( e -> {
 				try {
@@ -264,7 +275,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				Organisator organisator = (Organisator)entityManager.find(Organisator.class, buchungAtts[Buchung.CSVPositions.ORGANISATORID.ordinal()]);
 				// Rechnung
 
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 				String startS = buchungAtts[Buchung.CSVPositions.STARTDATUM.ordinal()].replace("T", " ");
 				String endS = buchungAtts[Buchung.CSVPositions.ENDDATUM.ordinal()].replace("T", " ");
 				LocalDateTime startNew = LocalDateTime.parse(startS, formatter);

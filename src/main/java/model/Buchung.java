@@ -129,7 +129,7 @@ public class Buchung implements IDepictable, IPersistable {
         boolean modifiable = true;
         start = start.replace("T", " ");
         end = end.replace("T", " ");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime ldtStart = LocalDateTime.parse((start.equals("") ? LocalDateTime.now().format(formatter) : start), formatter);
         LocalDateTime ldtEnd = LocalDateTime.parse((end.equals("") ?(LocalDateTime.now().plusSeconds(DFLT_T_OFFSET)).format(formatter) : end), formatter);
         String randID = UUID.randomUUID().toString();

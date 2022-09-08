@@ -488,7 +488,6 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 					fireGUIEvent( new GUIEvent(this, Commands.ADD_KUNDE, attVals ));
 				}
 			}
-
 		}
 
 		if( ge.getSource() == this.btnCompB) {
@@ -542,6 +541,9 @@ public class MainComponentMitTabbedPane extends ObservableComponent
 				}
 			}
 		}
+
+		if (ge.getSource() == this.btnComp)
+
 		/**
 		 * wenn nichts gemacht wird: an den Controller weiterleiten ...
 		 */

@@ -23,7 +23,8 @@ public class CarsharingApp {
 	
 	public static void main(String[] args) throws Exception {
 
-		propertyManager= new PropertyManager(args[0], CarsharingApp.class, "");
+
+	propertyManager= new PropertyManager(args.length > 0? args[0] :  "", CarsharingApp.class, "");
 
 
 
